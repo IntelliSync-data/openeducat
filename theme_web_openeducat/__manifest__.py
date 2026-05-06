@@ -2,7 +2,7 @@
     'name': 'OpenEduCat Theme',
     'summary': 'OpenEduCat Theme',
     'website' : 'https://openeducat.org/',
-    'category': 'ISD Modules',
+    'category': 'Theme',
     'version': '18.0.1.0',
     'author': 'OpenEduCat',
     'depends': [
