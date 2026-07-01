@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - ehub-demo
-    paths:
-      - 'openeducat/**'
 
 jobs:
   update:
