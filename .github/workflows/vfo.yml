@@ -26,7 +26,7 @@ jobs:
           git fetch origin && git reset --hard origin/vfo
           
           # Sync openeducat directory with rsync (including deletions)
-          rsync -av --delete ~/addons-system/openeducat/ /opt/custom-addons/
+          sudo rsync -av --delete ~/addons-system/openeducat/ /opt/custom-addons/
           
           # Restart Odoo service to apply changes
           sudo systemctl restart odoo
