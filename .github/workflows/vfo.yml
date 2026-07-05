@@ -1,4 +1,4 @@
-name: Update Fishing VietNam
+name: Update OpenEducCat Fishing VietNam
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       
-    - name: Update Fishing VietNam
+    - name: Deploy OpenEducCat to Server
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.VFO_HOST }}
@@ -21,12 +21,43 @@ jobs:
         key: ${{ secrets.VFO_SSH_KEY }}
         script_stop: true
         script: |
-          # Force update to latest remote code (no conflicts)
-          cd ~/addons-system/openeducat
-          git fetch origin && git reset --hard origin/vfo
+          # Clone if not exists, otherwise update
+          if [ ! -d ~/addons-system/openeducat ]; then
+            git clone git@github.com:IntelliSync-data/openeducat.git ~/addons-system/openeducat
+            cd ~/addons-system/openeducat && git checkout vfo
+          else
+            cd ~/addons-system/openeducat
+            git fetch origin && git reset --hard origin/vfo
+          fi
           
           # Sync openeducat directory with rsync (including deletions)
-          sudo rsync -av --delete ~/addons-system/openeducat/ /opt/custom-addons/
-          
-          # Restart Odoo service to apply changes
+          sudo mkdir -p /opt/custom-addons/isd_payment
+          sudo rsync -av --delete ~/addons-system/openeducat/ /opt/custom-addons/openeducat/
+
+    - name: Restart Odoo Service
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VFO_HOST }}
+        username: ${{ secrets.VFO_USERNAME }}
+        key: ${{ secrets.VFO_SSH_KEY }}
+        script: |
           sudo systemctl restart odoo
+
+    - name: Verify Odoo Service
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VFO_HOST }}
+        username: ${{ secrets.VFO_USERNAME }}
+        key: ${{ secrets.VFO_SSH_KEY }}
+        script: |
+          sleep 5
+          if sudo systemctl is-active --quiet odoo; then
+            echo "Odoo restarted successfully"
+          else
+            echo "Odoo failed to restart"
+            echo "=== systemctl status ==="
+            sudo systemctl status odoo --no-pager
+            echo "=== Last 50 lines of Odoo log ==="
+            sudo tail -n 50 /var/log/odoo/odoo.log
+            exit 1
+          fi
