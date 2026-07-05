@@ -31,7 +31,7 @@ jobs:
           fi
           
           # Sync openeducat directory with rsync (including deletions)
-          sudo mkdir -p /opt/custom-addons/isd_payment
+          sudo mkdir -p /opt/custom-addons/openeducat
           sudo rsync -av --delete ~/addons-system/openeducat/ /opt/custom-addons/openeducat/
 
     - name: Restart Odoo Service
