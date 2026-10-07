@@ -63,10 +63,10 @@
             echo "Updating openeducat module..."
             sudo -u odoo /opt/odoo-venv/bin/python /opt/odoo18/odoo-bin \
             -c /etc/odoo/odoo.conf -d ${{ secrets.EHUB_DB_NAME }} \
-            -u openeducat_activity,open_admission,open_assignment, \
-            openeducat_attendance,openeducat_classroom,openeducat_core, \
-            openeducat_erp,openeducat_exam,openeducat_facility, \
-            openeducate_fees,openeducat_library,openeducat_parent, \
+            -u openeducat_activity,open_admission,open_assignment,\
+            openeducat_attendance,openeducat_classroom,openeducat_core,\
+            openeducat_erp,openeducat_exam,openeducat_facility,\
+            openeducate_fees,openeducat_library,openeducat_parent,\
             openeducat_timetable,theme_web_openeducat --stop-after-init --no-http
             if [ $? -ne 0 ]; then
               echo "Module update FAILED"
